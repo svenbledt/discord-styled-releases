@@ -7,9 +7,11 @@ export async function getContext () {
   const payload = context.payload
 
   const content = {
-    body: payload.release.body.length < 1500
-      ? payload.release.body
-      : payload.release.body.substring(0, 1500) + ` ([...](${payload.release.html_url}))`,
+    body:
+      payload.release.body.length < 1500
+        ? payload.release.body
+        : payload.release.body.substring(0, 1500) +
+          ` ([...](${payload.release.html_url}))`,
     tag_name: payload.release.tag_name,
     html_url: payload.release.html_url,
     full_name: payload.repository.full_name
@@ -24,7 +26,9 @@ async function run () {
     const webhookToken = core.getInput('webhook_token')
 
     if (!webhookId || !webhookToken) {
-      return core.setFailed('webhook ID or TOKEN are not configured correctly. Verify config file.')
+      return core.setFailed(
+        'webhook ID or TOKEN are not configured correctly. Verify config file.'
+      )
     }
 
     const content = await getContext()
@@ -36,18 +40,23 @@ async function run () {
       url: content.html_url
     }
 
-    const body = { embeds: [embedMsg] }
+    const body = {
+      content: '<@everyone>',
+      embeds: [embedMsg]
+    }
 
-    const url = `https://discord.com/api/webhooks/${core.getInput('webhook_id')}/${core.getInput('webhook_token')}?wait=true`
+    const url = `https://discord.com/api/webhooks/${core.getInput(
+      'webhook_id'
+    )}/${core.getInput('webhook_token')}?wait=true`
 
     fetch(url, {
       method: 'post',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' }
     })
-      .then(res => res.json())
-      .then(data => core.info(JSON.stringify(data)))
-      .catch(err => {
+      .then((res) => res.json())
+      .then((data) => core.info(JSON.stringify(data)))
+      .catch((err) => {
         core.error(err)
         core.setFailed(err.message)
       })
