@@ -35255,21 +35255,34 @@ const github = __nccwpck_require__(3228)
 const fetch = __nccwpck_require__(6705)
 
 async function getContext () {
-  const context = github.context
-  const payload = context.payload
-
-  const content = {
-    body:
-      payload.release.body.length < 1500
+  let content;
+  
+  if (process.env.GITHUB_CONTEXT) {
+    // Handle provided release context
+    const releaseData = JSON.parse(process.env.GITHUB_CONTEXT);
+    content = {
+      body: releaseData.body.length < 1500
+        ? releaseData.body
+        : releaseData.body.substring(0, 1500) + ` ([...](${releaseData.html_url}))`,
+      tag_name: releaseData.tag_name,
+      html_url: releaseData.html_url,
+      full_name: releaseData.repository.full_name
+    };
+  } else {
+    // Fallback to existing github.context handling
+    const context = github.context;
+    const payload = context.payload;
+    content = {
+      body: payload.release.body.length < 1500
         ? payload.release.body
-        : payload.release.body.substring(0, 1500) +
-          ` ([...](${payload.release.html_url}))`,
-    tag_name: payload.release.tag_name,
-    html_url: payload.release.html_url,
-    full_name: payload.repository.full_name
+        : payload.release.body.substring(0, 1500) + ` ([...](${payload.release.html_url}))`,
+      tag_name: payload.release.tag_name,
+      html_url: payload.release.html_url,
+      full_name: payload.repository.full_name
+    };
   }
 
-  return content
+  return content;
 }
 
 async function run () {
