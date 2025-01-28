@@ -3,34 +3,34 @@ const github = require('@actions/github')
 const fetch = require('node-fetch')
 
 export async function getContext () {
-  let content;
-  
+  let content
+
   if (process.env.GITHUB_CONTEXT) {
     // Handle provided release context
-    const releaseData = JSON.parse(process.env.GITHUB_CONTEXT);
+    const releaseData = JSON.parse(process.env.GITHUB_CONTEXT)
     content = {
-      body: releaseData.body.length < 1500
+      body: releaseData.body?.length < 1500
         ? releaseData.body
-        : releaseData.body.substring(0, 1500) + ` ([...](${releaseData.html_url}))`,
+        : releaseData.body?.substring(0, 1500) + ` ([...](${releaseData.html_url}))`,
       tag_name: releaseData.tag_name,
       html_url: releaseData.html_url,
-      full_name: releaseData.repository.full_name
-    };
+      full_name: process.env.GITHUB_REPOSITORY || github.context.repo.full_name
+    }
   } else {
     // Fallback to existing github.context handling
-    const context = github.context;
-    const payload = context.payload;
+    const context = github.context
+    const payload = context.payload
     content = {
-      body: payload.release.body.length < 1500
+      body: payload.release.body?.length < 1500
         ? payload.release.body
-        : payload.release.body.substring(0, 1500) + ` ([...](${payload.release.html_url}))`,
+        : payload.release.body?.substring(0, 1500) + ` ([...](${payload.release.html_url}))`,
       tag_name: payload.release.tag_name,
       html_url: payload.release.html_url,
-      full_name: payload.repository.full_name
-    };
+      full_name: context.repo.full_name
+    }
   }
 
-  return content;
+  return content
 }
 
 async function run () {
