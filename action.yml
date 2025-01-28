@@ -8,7 +8,7 @@ inputs:
     description: Discord's webhook token. Use GH repo secrets.
     required: true
 runs:
-  using: 'node12'
+  using: 'node20'
   main: './dist/index.js'
 branding:
   color: orange

@@ -31,7 +31,7 @@ async function run () {
 
     const embedMsg = {
       color: 3447003,
-      title: `${content.full_name} | Release ${content.tag_name}`,
+      title: `Update ${content.tag_name}`,
       description: content.body,
       url: content.html_url
     }
@@ -47,7 +47,10 @@ async function run () {
     })
       .then(res => res.json())
       .then(data => core.info(JSON.stringify(data)))
-      .catch(err => core.info(err))
+      .catch(err => {
+        core.error(err)
+        core.setFailed(err.message)
+      })
   } catch (error) {
     core.setFailed(error.message)
   }
