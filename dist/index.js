@@ -35293,7 +35293,7 @@ async function run () {
     }
 
     const body = {
-      content: '<@everyone>',
+      content: '@everyone',
       embeds: [embedMsg]
     }
 
