@@ -37,6 +37,7 @@ async function run () {
   try {
     const webhookId = core.getInput('webhook_id')
     const webhookToken = core.getInput('webhook_token')
+    const mentionEveryone = core.getInput('mention_everyone') === 'true'
 
     if (!webhookId || !webhookToken) {
       return core.setFailed(
@@ -54,7 +55,7 @@ async function run () {
     }
 
     const body = {
-      content: '@everyone',
+      content: mentionEveryone ? '@everyone' : '',
       embeds: [embedMsg]
     }
 

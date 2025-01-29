@@ -24,10 +24,11 @@ jobs:
     name: Sends custom message
     steps:
       - name: Sending message
-        uses: nhevia/discord-styled-releases@main
+        uses: svenbledt/discord-styled-releases@main
         with:
           webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
+          mention_everyone: 'false'
 ```
 
 ### Create a webhook
@@ -53,6 +54,11 @@ Value: ID (from url)
 
 >Name: DISCORD_WEBHOOK_TOKEN
 Value: TOKEN (from url)
+
+### Options:
+
+>Name: MENTION_EVERYONE
+Value: true/false
 
 ---
 
